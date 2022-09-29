@@ -1,5 +1,11 @@
 #!/bin/bash
 # Developer: Massoud Ahmed
+# You need Imagemagick 
+# apt install imagemagick
+# set policy:
+# <policy domain="coder" rights="read | write" pattern="PDF" />
+# <policy domain="coder" rights="read|write" pattern="{GIF,JPEG,PNG,WEBP}" />
+
 
 # create temp Dir
 DIR=`mktemp -d`
