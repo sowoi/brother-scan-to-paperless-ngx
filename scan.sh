@@ -5,8 +5,9 @@
 DIR=`mktemp -d`
 CUR=$PWD
 cd $DIR
-# Paperless NGX consume path
-OUTPUT="/srv/scans"
+# Output directory of scan
+OUTPUT="/srv/scanslocal"
+FILENAME=scan_"$(date +%Y-%m-%d-%H-%M-%S)".pdf
 
 # get scanner info 
 scanner=`scanimage -L | cut -d " " -f 2 | sed 's/\`//'  | sed "s/'//" ` 
@@ -24,40 +25,40 @@ do
     
     if [[ `identify -verbose $f | grep "skewness" | tail -n 1 | cut -d ":" -f 2 | cut -d "." -f 1` -lt -6 ]]; then
         #check if png is blank and remove it
-        if [[ $COUNTER -eq 1 ]]; then
-            # save the first page
-            echo "$f will not be removed"
-            continue
+	if [[ $COUNTER -eq 1 ]]; then
+	    # save the first page
+	    echo "$f will not be removed"
+	    continue
         else
-         echo "$f will be removed"
+   	 echo "$f will be removed"
          rm $f
-        fi
+	fi
     else
         #else keep the png
-        echo "$f will not be removed"
+	echo "$f will not be removed"
         continue
     fi;
     COUNTER=$((COUNTER+1))
-           
-           
+	   
+	   
 done
 
 
 # reverse order of png and convert to pdf with rotation
 filesInFolder=`ls -rv`
 echo "$filesInFolder"
-convert $filesInFolder -rotate 180 $CUR/$1
+convert $filesInFolder -rotate 180 $CUR/$FILENAME
 
 cd $CUR
 
 # move them to scans folder
-mv $1 "$OUTPUT"
+mv $FILENAME "$OUTPUT"
 if [ $? -eq 1 ]; then
    exit 1
 fi
-echo "$OUTPUT/$1"
+echo "$OUTPUT/$FILENAME"
 exit 0
 
 else
     exit 1
-fi 
+fi
